@@ -19,14 +19,22 @@ referenced there).
 
 ### Usage
 
-    vdv451db [--schema SCHEMA] database_url input_file [input_file ...]
+    usage: vdv451db [-h] [--schema SCHEMA] [-c CONFIG]
+                    [--post_ingest_script POST_INGEST_SCRIPT]
+                    database_url input_file [input_file ...]
 
     positional arguments:
       database_url          Database to write to.
-      input_file            File to read data from
+      input_file            Files to read data from
 
     optional arguments:
       -h, --help            show this help message and exit
       --schema SCHEMA       Schema to create tables in (default: vdv451db)
-      -c CONFIG, --config-file CONFIG
+      -c CONFIG, --config_file CONFIG
                             Optional primary key and logging configuration
+      --post_ingest_script POST_INGEST_SCRIPT
+                            Optional path to an alternative post-ingest SQL script
+
+Example:
+
+    vdv451db --schema import01 postgresql:///vdv_imports *.X10
