@@ -1,5 +1,35 @@
-[vdv542db]
-sqlalchemy.url = postgresql:///
+[primary_keys]
+basis_ver_gueltigkeit: ver_gueltigkeit
+einzelanschluss: basis_version, einan_nr
+fahrzeug: basis_version, fzg_nr
+firmenkalender: basis_version, betriebstag
+flaechen_zone: basis_version, fl_zone_typ_nr, fl_zone_nr
+fl_zone_ort: basis_version, fl_zone_typ_nr
+lid_verlauf: basis_version, li_lfd_nr, li_nr, str_li_var
+menge_basis_versionen: basis_version
+menge_bereich: basis_version, bereich_nr
+menge_fahrtart: basis_version, fahrtart_nr
+menge_fgr: basis_version, fgr_nr
+menge_fzg_typ: basis_version, fzg_typ_nr
+menge_onr_typ: basis_version, onr_typ_nr
+menge_ort_typ: basis_version, ort_typ_nr
+menge_tagesart: basis_version, tagesart_nr
+ort_hztf: basis_version, fgr_nr, onr_typ_nr, ort_nr
+rec_anr: basis_version, anr_nr
+rec_frt_hzt: basis_version, frt_fid, onr_typ_nr, ort_nr
+rec_frt: basis_version, frt_fid
+rec_hp: basis_version, onr_typ_nr, ort_nr
+rec_lid: basis_version, li_nr, str_li_var
+rec_om: basis_version, onr_typ_nr, ort_nr
+rec_ort: basis_version, onr_typ_nr, ort_nr
+rec_sel_zp: basis_version, bereich_nr, onr_typ_nr, ort_nr, sel_ziel, sel_ziel_typ, zp_onr, zp_typ
+rec_sel: basis_version, bereich_nr, onr_typ_nr, ort_nr, sel_ziel, sel_ziel_typ
+rec_ueb: basis_version, bereich_nr, onr_typ_nr, ort_nr, ueb_ziel_typ, ueb_ziel
+rec_umlauf: basis_version, tagesart_nr, um_uid
+rec_ums: basis_version, einan_nr, tagesart_nr, ums_beginn, ums_ende
+rec_znr: basis_version, znr_nr
+sel_fzt_feld: basis_version, bereich_nr, fgr_nr, onr_typ_nr, ort_nr, sel_ziel, sel_ziel_typ
+ueb_fzt: basis_version, bereich_nr, fgr_nr, onr_typ_nr, ort_nr, ueb_ziel_typ, ueb_ziel
 
 [loggers]
 keys = root
