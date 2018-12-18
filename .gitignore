@@ -1,0 +1,23 @@
+# Egg info created by running setup.py
+*.egg-info
+
+# python caches
+**/__pycache__/**/*
+
+# local configuration
+*.ini
+graph_config.json
+
+# compiled python
+**/*.pyc
+
+# Logs
+*.log
+
+# Stuff
+dist
+build
+*.swp
+/.idea/
+env/
+venv/
