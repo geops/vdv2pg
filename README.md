@@ -14,12 +14,12 @@ referenced there).
 
 ### Installation
 
-    pip install vdv451db
+    pip install vdv2pg
 
 
 ### Usage
 
-    usage: vdv451db [-h] [--schema SCHEMA] [-c CONFIG]
+    usage: vdv2pg [-h] [--schema SCHEMA] [-c CONFIG]
                     [--post_ingest_script POST_INGEST_SCRIPT]
                     database_url input_file [input_file ...]
 
@@ -29,7 +29,7 @@ referenced there).
 
     optional arguments:
       -h, --help            show this help message and exit
-      --schema SCHEMA       Schema to create tables in (default: vdv451db)
+      --schema SCHEMA       Schema to create tables in (default: vdv2pg)
       -c CONFIG, --config_file CONFIG
                             Optional primary key and logging configuration
       --post_ingest_script POST_INGEST_SCRIPT
@@ -37,4 +37,4 @@ referenced there).
 
 Example:
 
-    vdv451db --schema import01 postgresql:///vdv_imports *.X10
+    vdv2pg --schema import01 postgresql:///vdv_imports *.X10

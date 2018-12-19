@@ -8,7 +8,7 @@ from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.schema import Table
 
-from vdv451db import scoped_session
+from vdv2pg import scoped_session
 
 logger = getLogger(__name__)
 

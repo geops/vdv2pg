@@ -77,8 +77,8 @@ def get_argument_parser(description=None):
     parser.add_argument(
         'input_file', type=str, nargs='+', help='Files to read data from')
     parser.add_argument(
-        '--schema', type=str, metavar='SCHEMA', default='vdv451db',
-        help='Schema to create tables in (default: vdv451db)')
+        '--schema', type=str, metavar='SCHEMA', default='vdv2pg',
+        help='Schema to create tables in (default: vdv2pg)')
     parser.add_argument(
         '-c', '--config_file', type=str, metavar='CONFIG',
         help='Optional primary key and logging configuration')
@@ -123,7 +123,7 @@ def execute_sql_script(dsn, filename, schema):
 
 
 def main():
-    from vdv451db.parser import Parser
+    from vdv2pg.parser import Parser
 
     args = get_argument_parser(__doc__).parse_args()
     engine, Session, config = configure(args)

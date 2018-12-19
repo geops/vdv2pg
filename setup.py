@@ -9,14 +9,14 @@ with open(os.path.join(here, 'requirements.txt')) as f:
                 if len(line) > 1 and not line.startswith('#')]
 
 setup(
-    name='vdv451db',
+    name='vdv2pg',
     version='0.0.1',
     description='Import VDV 451 files into a database',
     long_description=README,
     long_description_content_type='text/markdown',
     author='Milan Oberkirch | geOps',
     author_email='milan.oberkirch@geops.de',
-    keywords='vdv451 sql database',
+    keywords='vdv2pg sql database',
     license='MIT',
     classifiers=[
         "Programming Language :: Python :: 2.7",
@@ -24,11 +24,11 @@ setup(
         "Programming Language :: Python",
         "License :: OSI Approved :: MIT License",
     ],
-    packages=['vdv451db'],
+    packages=['vdv2pg'],
     install_requires=requires,
     include_package_data=True,
     entry_points="""\
         [console_scripts]
-        vdv451db = vdv451db:main
+        vdv2pg = vdv2pg:main
     """,
   )
