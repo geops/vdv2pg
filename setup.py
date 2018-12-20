@@ -10,10 +10,11 @@ with open(os.path.join(here, 'requirements.txt')) as f:
 
 setup(
     name='vdv2pg',
-    version='0.0.1',
+    version='0.0.2',
     description='Import VDV 451 files into a database',
     long_description=README,
     long_description_content_type='text/markdown',
+    url="https://github.com/geops/vdv2pg",
     author='Milan Oberkirch | geOps',
     author_email='milan.oberkirch@geops.de',
     keywords='vdv2pg sql database',
