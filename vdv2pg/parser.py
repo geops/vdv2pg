@@ -16,8 +16,8 @@ logger = getLogger(__name__)
 @as_declarative()
 class Base:
     def __repr__(self):
-        return "<{} object at 0x{:x} with id {}>".format(
-            type(self).__name__, id(self), self.id)
+        return "<{} {} object at 0x{:x}>".format(
+            type(self).__name__, type(self).__table__.name, id(self))
 
 
 def get_column(atr, frm):
@@ -76,7 +76,7 @@ class Parser():
             Model = self.create_table(table_args)
             logger.info("Created new table '%s'", Model.__table__.name)
             reader = DictReader(f, fieldnames=['typ'] + table_args['atr'],
-                                delimiter=';')
+                                delimiter=';', skipinitialspace=True)
 
             try:
                 with scoped_session(self.session_cls) as session:
