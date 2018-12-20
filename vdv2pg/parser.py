@@ -37,7 +37,15 @@ class Parser():
         self.schema = schema
         self.pk_mapping = pk_mapping or {}
 
-    def create_table(self, table_args):
+    def create_table(self, filename, file):
+        file_headers = []
+        table_args = {}
+        for line in file:
+            file_headers.append(line)
+            key, *values = (s.strip() for s in line.split(';'))
+            table_args[key] = list(map(str.lower, values))
+            if line.startswith('frm'):
+                break
         tbl = table_args['tbl'][0].lower()
         pk = sa.PrimaryKeyConstraint(
             *map(str.strip, self.pk_mapping[tbl].split(','))
@@ -51,8 +59,11 @@ class Parser():
                 *(get_column(atr, frm) for atr, frm in
                     zip(table_args['atr'], table_args['frm'])),
                 pk,
-                schema=self.schema
+                schema=self.schema,
+                comment="Created from file {} with header:\n    {}".format(
+                    filename, '    '.join(file_headers)),
             )
+            column_names = table_args['atr']
 
         Model.__table__.create(bind=self.engine)
         return Model
@@ -65,17 +76,10 @@ class Parser():
                 dct[k] = None
 
     def parse(self, filename, encoding='Windows-1252'):
-        table_args = {}
         with open(filename, encoding=encoding) as f:
-            for line in f:
-                key, *values = (s.strip() for s in line.split(';'))
-                table_args[key] = list(map(str.lower, values))
-                if line.startswith('frm'):
-                    break
-
-            Model = self.create_table(table_args)
+            Model = self.create_table(filename, f)  # seeks to end of header
             logger.info("Created new table '%s'", Model.__table__.name)
-            reader = DictReader(f, fieldnames=['typ'] + table_args['atr'],
+            reader = DictReader(f, fieldnames=['typ'] + Model.column_names,
                                 delimiter=';', skipinitialspace=True)
 
             try:
