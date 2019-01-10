@@ -2,22 +2,10 @@
 
 from logging import getLogger
 from csv import DictReader
-
 import sqlalchemy as sa
-from sqlalchemy.ext.declarative import as_declarative
-from sqlalchemy.exc import ProgrammingError
-from sqlalchemy.schema import Table
 
-from vdv2pg import scoped_session
 
 logger = getLogger(__name__)
-
-
-@as_declarative()
-class Base:
-    def __repr__(self):
-        return "<{} {} object at 0x{:x}>".format(
-            type(self).__name__, type(self).__table__.name, id(self))
 
 
 def get_column(atr, frm):
@@ -31,11 +19,9 @@ def get_column(atr, frm):
 
 
 class Parser():
-    def __init__(self, engine, session_cls, schema, pk_mapping=None):
-        self.engine = engine
-        self.session_cls = session_cls
+    def __init__(self, metadata, schema):
+        self.metadata = metadata
         self.schema = schema
-        self.pk_mapping = pk_mapping or {}
 
     def create_table(self, filename, file):
         file_headers = []
@@ -46,27 +32,16 @@ class Parser():
             table_args[key] = list(map(str.lower, values))
             if line.startswith('frm'):
                 break
-        tbl = table_args['tbl'][0].lower()
-        pk = sa.PrimaryKeyConstraint(
-            *map(str.strip, self.pk_mapping[tbl].split(','))
-        ) if tbl in self.pk_mapping else sa.Column(
-            'id', sa.Integer, primary_key=True)
 
-        class Model(Base):
-            __table__ = Table(
-                tbl,
-                Base.metadata,
-                *(get_column(atr, frm) for atr, frm in
-                    zip(table_args['atr'], table_args['frm'])),
-                pk,
-                schema=self.schema,
-                comment="Created from file {} with header:\n    {}".format(
-                    filename, '    '.join(file_headers)),
-            )
-            column_names = table_args['atr']
-
-        Model.__table__.create(bind=self.engine)
-        return Model
+        return sa.Table(
+            table_args['tbl'][0].lower(),
+            self.metadata,
+            *(get_column(atr, frm) for atr, frm in
+                zip(table_args['atr'], table_args['frm'])),
+            schema=self.schema,
+            comment="Created from file {} with header:\n    {}".format(
+                filename, '    '.join(file_headers)),
+        )
 
     @staticmethod
     def clean(dct):
@@ -75,22 +50,19 @@ class Parser():
             if isinstance(v, str) and v.strip() == '':
                 dct[k] = None
 
-    def parse(self, filename, encoding='Windows-1252'):
+    def parse(self, conn, filename, encoding='Windows-1252'):
         with open(filename, encoding=encoding) as f:
-            Model = self.create_table(filename, f)  # seeks to end of header
-            logger.info("Created new table '%s'", Model.__table__.name)
-            reader = DictReader(f, fieldnames=['typ'] + Model.column_names,
+            table = self.create_table(filename, f)  # seeks to end of header
+            column_names = table.columns.keys()
+            logger.debug(
+                "Creating or updating table %s with columns (%s)",
+                table.name, ', '.join(column_names))
+            self.metadata.create_all(conn, tables=[table])
+            reader = DictReader(f, fieldnames=['typ'] + column_names,
                                 delimiter=';', skipinitialspace=True)
+            for dct in reader:
+                if dct.pop('typ') == 'rec':
+                    self.clean(dct)
+                    conn.execute(table.insert(), **dct)
 
-            try:
-                with scoped_session(self.session_cls) as session:
-                    for dct in reader:
-                        if dct.pop('typ') == 'rec':
-                            self.clean(dct)
-                            session.add(Model(**dct))
-
-                    session.commit()
-            except Exception:
-                logger.exception("Failed ingesting %s", filename)
-            else:
-                logger.info("Successfully ingested %s", filename)
+            logger.info("Ingested %s", filename)
