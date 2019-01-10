@@ -3,8 +3,8 @@ Tool for dumping VDV 451 data into a database
 
 This is intended to quickly analyze the content of a collection of VDV files in
 the VDV 451 format. By running this script a new schema is created and filled
-with one table per inuput file. All data from the files will be dumped into the
-tables.
+with one table per input file. Alternatively an existing schema may be used. 
+All data from the files will be dumped into the tables.
 
 After creating the tables and importing data you may also add definitions to
 the schema using a SQL-script specified by the `--post_ingest_script` parameter.
