@@ -32,10 +32,9 @@ class Parser():
             table_args[key] = list(map(str.lower, values))
             if line.startswith('frm'):
                 break
-        tbl = table_args['tbl'][0].lower()
 
-        table = sa.Table(
-            tbl,
+        return sa.Table(
+            table_args['tbl'][0].lower(),
             self.metadata,
             *(get_column(atr, frm) for atr, frm in
                 zip(table_args['atr'], table_args['frm'])),
@@ -43,9 +42,6 @@ class Parser():
             comment="Created from file {} with header:\n    {}".format(
                 filename, '    '.join(file_headers)),
         )
-        column_names = table_args['atr']
-
-        return table, column_names
 
     @staticmethod
     def clean(dct):
@@ -56,7 +52,8 @@ class Parser():
 
     def parse(self, conn, filename, encoding='Windows-1252'):
         with open(filename, encoding=encoding) as f:
-            table, column_names = self.create_table(filename, f)  # seeks to end of header
+            table = self.create_table(filename, f)  # seeks to end of header
+            column_names = table.columns.keys()
             logger.debug(
                 "Creating or updating table %s with columns (%s)",
                 table.name, ', '.join(column_names))
