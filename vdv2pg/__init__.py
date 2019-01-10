@@ -21,22 +21,34 @@ logger = logging.getLogger(__name__)
 
 def get_argument_parser(description=None):
     parser = ArgumentParser(description=description)
+    parser.add_argument("database_url", type=str, help="Database to write to.")
     parser.add_argument(
-        'database_url', type=str, help='Database to write to.')
+        "input_file", type=str, nargs="+", help="Files to read data from"
+    )
     parser.add_argument(
-        'input_file', type=str, nargs='+', help='Files to read data from')
+        "--schema",
+        type=str,
+        metavar="SCHEMA",
+        default="vdv2pg",
+        help="Schema to create tables in (default: vdv2pg)",
+    )
     parser.add_argument(
-        '--schema', type=str, metavar='SCHEMA', default='vdv2pg',
-        help='Schema to create tables in (default: vdv2pg)')
+        "--append",
+        action="store_true",
+        help="Append to existing tables instead of creating a new schema",
+    )
     parser.add_argument(
-        '--append', action='store_true',
-        help='Append to existing tables instead of creating a new schema')
+        "--post_ingest_script",
+        type=str,
+        help="Optional path to a SQL script applied after ingesting the data",
+    )
     parser.add_argument(
-        '--post_ingest_script', type=str,
-        help='Optional path to a SQL script applied after ingesting the data')
-    parser.add_argument(
-        '-l', '--loglevel', type=str, metavar='LOGLEVEL',
-        help='Control verbosity, possible values: DEBUG, INFO, WARNING, ERROR')
+        "-l",
+        "--loglevel",
+        type=str,
+        metavar="LOGLEVEL",
+        help="Control verbosity, possible values: DEBUG, INFO, WARNING, ERROR",
+    )
     return parser
 
 
@@ -75,8 +87,7 @@ def main():
             try:
                 conn.execute(CreateSchema(args.schema))
             except ProgrammingError as e:
-                logger.warning(
-                    "Could not create schema '%s': %s", args.schema, e)
+                logger.warning("Could not create schema '%s': %s", args.schema, e)
                 exit(1)
         for filename in args.input_file:
             try:
@@ -89,10 +100,9 @@ def main():
             try:
                 execute_sql_script(conn, args.post_ingest_script, args.schema)
             except Exception:
-                logger.exception(
-                    "Failed to execute %s", args.post_ingest_script)
+                logger.exception("Failed to execute %s", args.post_ingest_script)
                 exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
