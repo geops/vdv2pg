@@ -324,8 +324,11 @@ alter table only "rec_hp"
     add constraint "rec_hp_pkey" primary key ("basis_version", "onr_typ_nr", "ort_nr");
 alter table only "rec_lid"
     add constraint "rec_lid_pkey" primary key ("basis_version", "li_nr", "str_li_var");
-alter table only "rec_lid"
-    add constraint "rec_lid_li_ri_nr_uq" unique ("basis_version", "li_nr", "li_ri_nr");
+-- EINZELANSCHLUSS only has columns for the following attributes, comment out the next four lines to add a foreign key (does not work with all datasets):
+-- alter table only "rec_lid"
+--    add constraint "rec_lid_li_ri_nr_uq" unique ("basis_version", "li_nr", "li_ri_nr");
+-- alter table only "einzelanschluss"
+--    add foreign key ("basis_version", "abb_li_nr", "abb_li_ri_nr") references "rec_lid"("basis_version", "li_nr","li_ri_nr");
 alter table only "rec_om"
     add constraint "rec_om_pkey" primary key ("basis_version", "onr_typ_nr", "ort_nr");
 alter table only "rec_ort"
@@ -384,8 +387,6 @@ create index on "rec_umlauf" using btree ("fzg_typ_nr");
 create index on "rec_umlauf" using btree ("um_uid");
 create index on "rec_ums" using btree ("einan_nr");
 create index on "rec_znr" using btree ("znr_code");
-alter table only "einzelanschluss"
-    add foreign key ("basis_version", "abb_li_nr", "abb_li_ri_nr") references "rec_lid"("basis_version", "li_nr","li_ri_nr");
 alter table only "rec_ums"
     add foreign key ("basis_version", "einan_nr") references "einzelanschluss"("basis_version", "einan_nr");
 alter table only "fl_zone_ort"
@@ -456,7 +457,5 @@ alter table only "ueb_fzt"
     add foreign key ("basis_version", "bereich_nr", "onr_typ_nr", "ort_nr", "ueb_ziel_typ", "ueb_ziel") references "rec_ueb"("basis_version", "bereich_nr", "onr_typ_nr", "ort_nr", "ueb_ziel_typ", "ueb_ziel");
 alter table only "rec_frt"
     add foreign key ("basis_version", "tagesart_nr", "um_uid") references "rec_umlauf"("basis_version", "tagesart_nr", "um_uid");
-alter table only "lid_verlauf"
-    add foreign key ("basis_version", "znr_nr") references "rec_znr"("basis_version", "znr_nr");
 alter table only "fahrzeug"
     add foreign key ("basis_version", "unternehmen") references "zul_verkehrsbetrieb"("basis_version", "unternehmen");
