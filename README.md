@@ -1,3 +1,5 @@
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=geops/vdv2pg)](https://dependabot.com)
+
 Tool for dumping VDV 451 data into a database
 ---------------------------------------------
 
